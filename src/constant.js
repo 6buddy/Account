@@ -1,0 +1,5 @@
+export const confirmPro = "http://localhost:4250/sso/pro/confirm"
+export const confirmPatient = "http://localhost:4250/sso/patient/confirm"
+export const createPro = "http://localhost:4250/sso/pro/invite"
+export const resetPassword = "http://localhost:4250/sso/global/reset"
+export const enterPassword = "http://localhost:4250/sso/global/change"
