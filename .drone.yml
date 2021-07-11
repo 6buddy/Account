@@ -1,7 +1,6 @@
 kind: pipeline
 type: docker
 name: build-dev
-
 steps:
   - name: build-app
     image: plugins/docker
@@ -17,8 +16,7 @@ steps:
       repo: rg.fr-par.scw.cloud/cypios/cypios-account
     commands: []
 
---
-
+---
 kind: pipeline
 type: docker
 name: build-prod
