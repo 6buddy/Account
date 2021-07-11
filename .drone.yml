@@ -17,6 +17,7 @@ steps:
       repo: rg.fr-par.scw.cloud/cypios/cypios-account
     commands: []
 
+--
 
 kind: pipeline
 type: docker
