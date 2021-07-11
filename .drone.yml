@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: build-docker
+name: build-dev
 
 steps:
   - name: build-app
@@ -8,6 +8,26 @@ steps:
     settings:
       dockerfile: Dockerfile
       auto_tag: true
+      registry:
+        from_secret: registry_uri
+      username:
+        from_secret: registry_login
+      password:
+        from_secret: registry_password
+      repo: rg.fr-par.scw.cloud/cypios/cypios-account
+    commands: []
+
+
+kind: pipeline
+type: docker
+name: build-prod
+steps:
+  - name: build-app
+    image: plugins/docker
+    settings:
+      dockerfile: Dockerfile
+      tags:
+        - prod
       registry:
         from_secret: registry_uri
       username:
