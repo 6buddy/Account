@@ -40,4 +40,4 @@ steps:
     commands: []
 trigger:
   event:
-  - tag
+    - tag
