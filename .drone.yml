@@ -35,3 +35,6 @@ steps:
         from_secret: registry_password
       repo: rg.fr-par.scw.cloud/cypios/cypios-account
     commands: []
+trigger:
+  event:
+  - tag
