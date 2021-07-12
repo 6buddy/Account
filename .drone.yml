@@ -6,7 +6,8 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: Dockerfile
-      auto_tag: true
+      tags:
+        - latest
       registry:
         from_secret: registry_uri
       username:
@@ -15,6 +16,9 @@ steps:
         from_secret: registry_password
       repo: rg.fr-par.scw.cloud/cypios/cypios-account
     commands: []
+trigger:
+  branch:
+    - master
 
 ---
 kind: pipeline
