@@ -7,6 +7,8 @@ import ForgottenPassword from "./components/ForgottenPassword";
 import CreatePro from "./components/CreatePro";
 import Error from "./components/Error";
 import ResetPassword from "./components/ResetPassword"
+import ResetEmail from "./components/ResetEmail";
+
 class App extends Component {
   render() {
     return (
@@ -16,6 +18,7 @@ class App extends Component {
             <Switch>
               <Route path="/" component={Home} exact />
               <Route path="/confirm" component={ConfirmAccount} />
+              <Route path="/change/email" component={ResetEmail} />
               <Route path="/reset/password" component={ResetPassword} />
 
               <Route path="/reset" component={ForgottenPassword} />

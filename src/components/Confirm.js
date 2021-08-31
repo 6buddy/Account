@@ -38,8 +38,11 @@ export default function ConfirmAccount({ className, ...rest }) {
       initialValues={{
         password: "",
         passwordConfirm: "",
+        phone: "",
+        phoneConfirm: "",
         mail: "",
         role: -1,
+        methodAuth: -1,
       }}
       validationSchema={Yup.object().shape({
         password: Yup.string()
@@ -52,10 +55,22 @@ export default function ConfirmAccount({ className, ...rest }) {
             "les mot de passe doivent etre égaux"
           )
           .required("obligatoire"),
+        phone: Yup.string()
+          .min(10, "06/07XXXXXXXX")
+          .max(10)
+          .matches(/^[0-9]{10}$/, "06/07XXXXXXXX")
+          .required("obligatoire"),
+        phoneConfirm: Yup.string()
+          .oneOf(
+            [Yup.ref("phone"), null],
+            "les numéro de portable doivent etre égaux"
+          )
+          .required("obligatoire"),
         mail: Yup.string()
           .email("doit etre un email valide")
           .required("obligatoire"),
-        role: Yup.number(),
+        role: Yup.number().min(0).max(1).required("obligatoire"),
+        methodAuth: Yup.number().min(0).max(1).required("obligatoire")
       })}
       onSubmit={async (
         values,
@@ -72,12 +87,13 @@ export default function ConfirmAccount({ className, ...rest }) {
               password: values.password,
               invite_token: paramId,
               email: values.mail,
+              phone: values.phone,
+              methodAuth: values.methodAuth
             }),
             headers: {
               "content-type": "application/json",
             },
           });
-          console.log(data.status);
           if (data.status !== 201 && data.status !== 200 && data.status !== 202)
             throw "Nom d'utilisateur invalide";
 
@@ -112,7 +128,7 @@ export default function ConfirmAccount({ className, ...rest }) {
       }) => (
         <form onSubmit={handleSubmit}>
           <Card className={clsx(classes.root, className)} {...rest}>
-            <CardHeader title="Crée votre mot de passe" />
+            <CardHeader title="Confirmer votre compte sur Cypios" />
             <Divider />
             <CardContent>
               <Grid container spacing={3}>
@@ -163,22 +179,81 @@ export default function ConfirmAccount({ className, ...rest }) {
                   />
                 </Grid>
                 <Grid item md={4} sm={6} xs={12}>
+                  <TextField
+                    error={Boolean(touched.phone && errors.phone)}
+                    fullWidth
+                    helperText={touched.phone && errors.phone}
+                    label="Numéro de portable (06XXXXXXXX)"
+                    name="phone"
+                    onChange={handleChange}
+                    type="text"
+                    value={values.phone}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={6} xs={12}>
+                  <TextField
+                    error={Boolean(
+                      touched.phoneConfirm && errors.phoneConfirm
+                    )}
+                    fullWidth
+                    helperText={
+                      touched.phoneConfirm && errors.phoneConfirm
+                    }
+                    label="Confirmation numéro de portable"
+                    name="phoneConfirm"
+                    onChange={handleChange}
+                    type="text"
+                    value={values.phoneConfirm}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={6} xs={12}>
                   <FormControl variant="outlined">
-                    <InputLabel>Role</InputLabel>
+                    <InputLabel>Méthode de double authentification</InputLabel>
                     <Select
-                      name="role"
-                      value={values.role}
+                      error={Boolean(
+                        touched.methodAuth && errors.methodAuth
+                      )}
+                      helperText={
+                        touched.methodAuth && errors.methodAuth
+                      }
+                      name="methodAuth"
+                      value={values.methodAuth}
                       onChange={handleChange}
-                      label="Role"
+                      label="Méthode de double authentificiation"
                     >
                       <MenuItem value="-1">
-                        <em>Selectionner un role</em>
+                        <em>Selectionner une méthode</em>
                       </MenuItem>
-                      <MenuItem value={0}>Patient</MenuItem>
-                      <MenuItem value={1}>Professionel</MenuItem>
+                      <MenuItem value={0}>Code par Email</MenuItem>
+                      <MenuItem value={1}>Code par Portable</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
+              </Grid>
+              <Grid item md={4} sm={6} xs={12} style={{ marginTop: "20px" }}>
+                <FormControl variant="outlined">
+                  <InputLabel>Role</InputLabel>
+                  <Select
+                    error={Boolean(
+                      touched.role && errors.role
+                    )}
+                    helperText={
+                      touched.role && errors.role
+                    }
+                    name="role"
+                    value={values.role}
+                    onChange={handleChange}
+                    label="Role"
+                  >
+                    <MenuItem value="-1">
+                      <em>Selectionner un role</em>
+                    </MenuItem>
+                    <MenuItem value={0}>Patient</MenuItem>
+                    <MenuItem value={1}>Professionel</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               {errors.submit && (
                 <Box mt={3}>
@@ -194,12 +269,13 @@ export default function ConfirmAccount({ className, ...rest }) {
                 type="submit"
                 variant="contained"
               >
-                crée votre mot de passe
+                Confirmer votre compte
               </Button>
             </Box>
           </Card>
         </form>
-      )}
-    </Formik>
+      )
+      }
+    </Formik >
   );
 }

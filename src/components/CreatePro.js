@@ -33,10 +33,12 @@ export default function CreatePro({ className, ...rest }) {
         firstname: "",
         mail: "",
         code: "",
+        rpps: ""
       }}
       validationSchema={Yup.object().shape({
         lastname: Yup.string().required("obligatoire"),
         firstname: Yup.string().required("obligatoire"),
+        rpps: Yup.string().required("obligatoire"),
         mail: Yup.string()
           .email("doit etre un mail valide")
           .required("obligatoire"),
@@ -53,7 +55,8 @@ export default function CreatePro({ className, ...rest }) {
             body: JSON.stringify({
               email: values.mail,
               firstname: values.firstname,
-              lastname: values.lastname
+              lastname: values.lastname,
+              rpps: values.rpps
             }),
             headers: {
               "content-type": "application/json",
@@ -123,6 +126,20 @@ export default function CreatePro({ className, ...rest }) {
                     onChange={handleChange}
                     type="text"
                     value={values.lastname}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={4} sm={6} xs={12}>
+                  <TextField
+                    error={Boolean(touched.rpps && errors.rpps)}
+                    fullWidth
+                    helperText={touched.rpps && errors.rpps}
+                    label="RPPS"
+                    name="rpps"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    type="text"
+                    value={values.rpps}
                     variant="outlined"
                   />
                 </Grid>
