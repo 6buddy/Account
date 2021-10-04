@@ -170,7 +170,7 @@ export default function ConfirmAccount({ className, ...rest }) {
                         <Grid container direction="column" justify="center">
                             <Grid container justify="center">
                                 <Grid item style={{ minWidth: "20px", maxWidth: "1000px" }}>
-                                    <CardMedia component="img" image="logo_cypios.svg" alt="logo cypios" />
+                                    <CardMedia component="img" image="Logo_cypios.svg" alt="logo cypios" />
                                 </Grid>
                             </Grid>
                             <Grid item style={{ textAlign: "center" }}>
