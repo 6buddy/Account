@@ -1,0 +1,142 @@
+trigger:
+  branches:
+    include:
+      - main
+      - master
+      - develop
+      - release/*
+
+parameters:
+  - name: Develop
+    displayName: Deploy Develop Environment
+    default: false
+    type: boolean
+
+  - name: Prod
+    displayName: Deploy Prod Environment
+    default: false
+    type: boolean
+
+  - name: Staging
+    displayName: Deploy Staging Environment
+    default: false
+    type: boolean
+
+  - name: Test
+    displayName: Deploy Test Environment
+    default: false
+    type: boolean
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: gitea-credentials
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Init
+        displayName: Init
+        steps:
+          - template: templates/custom-clone.yaml
+            parameters:
+              repository: "git.cypios.net/cypios/accountFront.git"
+          - template: templates/ms-semver-update.yaml
+      - job: DockerBuild
+        displayName: Docker Build
+        dependsOn: Init
+        variables:
+          DOCKER_BUILDKIT: 1
+          SemVer: $[ dependencies.Init.outputs['UpdateSemver.SemVer'] ]
+          FullSemVer: $[ dependencies.Init.outputs['UpdateSemver.FullSemVer'] ]
+          FullBuildMetaData: $[ dependencies.Init.outputs['UpdateSemver.FullBuildMetaData'] ]
+          InformationalVersion: $[ dependencies.Init.outputs['UpdateSemver.InformationalVersion'] ]
+          buildContext: "."
+        strategy:
+          matrix:
+            cypios-account:
+              componentName: cypios
+              microserviceName: cypios-account
+              dockerfilePath: ./Dockerfile
+              imageRepository: cypios/cypios-account
+              repositoryUrl: "git.cypios.net/cypios/accountFront.git"
+        steps:
+
+          - template: templates/custom-clone.yaml
+            parameters:
+              repository: $(repositoryUrl)
+
+          - template: templates/ms-docker-build.yaml
+            parameters:
+              componentName: $(componentName)
+              microserviceName: $(microserviceName)
+              dockerfilePath: $(dockerfilePath)
+              imageRepository: $(imageRepository)
+              buildContext: $(buildContext)
+
+  - stage: deploy
+    dependsOn: Build
+    jobs:
+      - job: init # Placeholder job to initialize the deploy stage and avoid errors
+        condition: false
+        steps:
+          - checkout: none
+          - bash: |
+              echo "init"
+
+      - ${{ if or(eq(parameters.Develop, true), and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+          - deployment: deployDev
+            environment: Develop.cypios-services-develop
+            variables:
+              - group: Develop
+              - template: "templates/version-vars.yaml"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - template: "templates/steps-deploy.yaml"
+                      parameters:
+                        azureSubscription: rg-cypios-dev
+
+      - ${{ if or(eq(parameters.Prod, true), and(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+          - deployment: deployProd
+            environment: Prod.cypios-services-prod
+            variables:
+              - group: Prod
+              - template: "templates/version-vars.yaml"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - template: "templates/steps-deploy.yaml"
+                      parameters:
+                        azureSubscription: rg-cypios-prod
+
+      - ${{ if or(eq(parameters.Staging, true), and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+          - deployment: deployStaging
+            environment: Staging.cypios-services-staging
+            variables:
+              - group: Staging
+              - template: "templates/version-vars.yaml"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - template: "templates/steps-deploy.yaml"
+                      parameters:
+                        azureSubscription: rg-cypios-staging
+
+      - ${{ if eq(parameters.Test, true) }}:
+          - deployment: deployTest
+            environment: Test.cypios-services-test
+            variables:
+              - group: Test
+              - template: "templates/version-vars.yaml"
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - template: "templates/steps-deploy.yaml"
+                      parameters:
+                        azureSubscription: rg-cypios-test

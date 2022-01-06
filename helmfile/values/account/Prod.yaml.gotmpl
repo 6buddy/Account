@@ -1,0 +1,44 @@
+image:
+  repository: cypios.azurecr.io/cypios/cypios-account
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  #tag: "" # this is provided by default-values.yaml.gotmpl
+
+
+fullnameOverride: "account"
+nameOverride: "account"
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  containerPort: 8080
+
+extraLabels:
+  app: account
+  version: v1
+
+probes:
+  enabled: false
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: account.cypios-prod.mobioos.com
+      paths:
+        - path: /
+  tls:
+    - secretName: account-prod-tls
+      hosts:
+        - account.cypios-prod.mobioos.com
+
+env: {}
+
+secrets: {}
+
+config:
+  files: []
+  inline: []

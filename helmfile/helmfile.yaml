@@ -1,0 +1,68 @@
+bases: 
+  - ./base/environments.yaml
+---
+bases:
+  - ./base/repositories.yaml
+  - ./base/defaults.yaml
+---
+
+{{ readFile "./base/templates.yaml" }}
+
+releases:
+
+{{ range .Values.releases }}
+  {{- $releaseVersion := . | replace "-" "_" | upper | printf "%s_VERSION" | env }}
+  {{ if (default (env "CYPIOS_DEFAULT_VERSION") $releaseVersion) }}
+- name: {{ . }}
+  <<: *default-service-release
+  {{ end }}
+{{ end }}
+
+- name: redis
+  chart: bitnami/redis
+  version: 10.3.1
+  namespace: '{{ .Values.namespace }}'
+  labels:
+    tier: dependencies
+  values:
+    - values/{{`{{ .Release.Name }}`}}/{{ .Environment.Name }}.yaml.gotmpl
+
+- name: ingress
+  chart: ingress-nginx/ingress-nginx
+  version: 4.0.13
+  namespace: ingress
+  labels:
+    tier: dependencies
+  values:
+    - controller:
+        # hostPort:
+        #   enabled: true
+        kind: DaemonSet
+        config:
+          proxy-buffer-size: "8k"
+        # service:
+        #   loadBalancerIP: {{ .Values.ingressLoadBalancerIP }}
+      defaultBackend:
+        enabled: true
+
+- name: cert-manager
+  chart: jetstack/cert-manager
+  version: v1.6.1
+  namespace: cert-manager
+  labels:
+    tier: dependencies
+  values:
+    - installCRDs: true
+      ingressShim:
+        defaultIssuerName: {{ .Values.defaultIssuerName }}
+        defaultIssuerKind: ClusterIssuer
+
+hooks:
+- events: ["prepare"]
+  showlogs: true
+  command: "helm"
+  args: ["package", "--version", "{{ requiredEnv "SemVer" }}", "--app-version", "{{ requiredEnv "SemVer" }}", "app-svc"]
+- events: ["cleanup"]
+  showlogs: true
+  command: "rm"
+  args: ["-v", "app-svc-{{ requiredEnv "SemVer" }}.tgz"]

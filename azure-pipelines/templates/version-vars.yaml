@@ -1,0 +1,11 @@
+variables:
+    - name: ShortSha
+      value: $[ stageDependencies.Build.Init.outputs['UpdateSemver.ShortSha'] ]
+    - name: SemVer
+      value: $[ stageDependencies.Build.Init.outputs['UpdateSemver.SemVer'] ]
+    - name: FullSemVer
+      value: $[ stageDependencies.Build.Init.outputs['UpdateSemver.FullSemVer'] ]
+    - name: FullBuildMetaData
+      value: $[ stageDependencies.Build.Init.outputs['UpdateSemver.FullBuildMetaData'] ]
+    - name: InformationalVersion
+      value: $[ stageDependencies.Build.Init.outputs['UpdateSemver.InformationalVersion'] ]

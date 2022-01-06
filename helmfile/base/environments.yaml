@@ -1,0 +1,38 @@
+environments:
+  default: {}
+
+  Develop:
+    values:
+    - kubeContext: aks-cypios-dev678d889f
+      ingressLoadBalancerIP: 20.90.121.103
+      defaultIssuerName: letsencrypt-prod
+      namespace: cypios-services-develop
+      releases:
+        - account
+
+  Prod:
+    values:
+    - kubeContext: aks-cypios-dev678d889f
+      ingressLoadBalancerIP: 20.90.121.103
+      defaultIssuerName: letsencrypt-prod
+      namespace: cypios-services-prod
+      releases:
+        - account
+
+  Staging:
+    values:
+    - kubeContext: aks-cypios-dev678d889f
+      ingressLoadBalancerIP: 20.90.121.103
+      defaultIssuerName: letsencrypt-prod
+      namespace: cypios-services-staging
+      releases:
+        - account
+
+  Test:
+    values:
+    - kubeContext: aks-cypios-dev678d889f
+      ingressLoadBalancerIP: 20.90.121.103
+      defaultIssuerName: letsencrypt-prod
+      namespace: cypios-services-test
+      releases:
+        - account
