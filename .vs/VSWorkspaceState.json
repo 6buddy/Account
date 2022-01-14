@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\azure-pipelines",
+    "\\helmfile",
+    "\\helmfile\\values",
+    "\\helmfile\\values\\account"
+  ],
+  "SelectedNode": "\\helmfile\\values\\account\\Develop.yaml.gotmpl",
+  "PreviewInSolutionExplorer": false
+}
