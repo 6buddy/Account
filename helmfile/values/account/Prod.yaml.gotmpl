@@ -1,5 +1,5 @@
 image:
-  repository: cypios.azurecr.io/cypios/cypios-account
+  repository: acrcypios.azurecr.io/cypios/cypios-account
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   #tag: "" # this is provided by default-values.yaml.gotmpl
@@ -27,13 +27,13 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: account.cypios-prod.mobioos.com
+    - host: account.test.cypios.com
       paths:
         - path: /
   tls:
     - secretName: account-prod-tls
       hosts:
-        - account.cypios-prod.mobioos.com
+        - account.test.cypios.com
 
 env: {}
 
