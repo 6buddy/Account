@@ -67,6 +67,15 @@ stages:
             parameters:
               repository: $(repositoryUrl)
 
+          - task: SonarQubePrepare@5
+            inputs:
+              SonarQube: 'Sonarqube'
+              scannerMode: 'CLI'
+              configMode: 'manual'
+              cliProjectKey: 'cypios_Account'
+              cliProjectName: 'Account'              
+              cliSources: '.'
+
           - template: templates/ms-docker-build.yaml
             parameters:
               componentName: $(componentName)
@@ -74,6 +83,16 @@ stages:
               dockerfilePath: $(dockerfilePath)
               imageRepository: $(imageRepository)
               buildContext: $(buildContext)
+
+          - script: |
+              FILTERED_PARAMS=$(echo $SONARQUBE_SCANNER_PARAMS | sed 's/"sonar.branch.name":"[^"]*"\,//g')
+              echo "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$FILTERED_PARAMS"
+            displayName: Filter out non-CE sonar parameters    
+          - task: SonarQubeAnalyze@5
+            
+          - task: SonarQubePublish@5
+            inputs:
+              pollingTimeoutSec: '900'
 
   - stage: deploy
     dependsOn: Build
