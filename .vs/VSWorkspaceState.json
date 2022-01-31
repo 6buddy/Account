@@ -3,9 +3,10 @@
     "",
     "\\azure-pipelines",
     "\\helmfile",
+    "\\helmfile\\base",
     "\\helmfile\\values",
     "\\helmfile\\values\\account"
   ],
-  "SelectedNode": "\\helmfile\\values\\account\\Develop.yaml.gotmpl",
+  "SelectedNode": "\\helmfile\\values\\account\\Prod.yaml.gotmpl",
   "PreviewInSolutionExplorer": false
 }
