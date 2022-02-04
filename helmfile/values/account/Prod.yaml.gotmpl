@@ -28,13 +28,13 @@ ingress:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
-    - host: account.test.cypios.com
+    - host: account.prod.cypios.com
       paths:
         - path: /
   tls:
     - secretName: account-prod-tls
       hosts:
-        - account.test.cypios.com
+        - account.prod.cypios.com
 
 env: {}
 

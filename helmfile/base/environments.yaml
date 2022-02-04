@@ -12,7 +12,7 @@ environments:
 
   Prod:
     values:
-    - kubeContext: aks-cypios-test
+    - kubeContext: aks-cypios-prod
       ingressLoadBalancerIP: 20.90.121.103
       defaultIssuerName: letsencrypt-prod
       namespace: cypios-services-prod
@@ -21,7 +21,7 @@ environments:
 
   Staging:
     values:
-    - kubeContext: aks-cypios-test
+    - kubeContext: aks-cypios-staging
       ingressLoadBalancerIP: 20.90.121.103
       defaultIssuerName: letsencrypt-prod
       namespace: cypios-services-staging

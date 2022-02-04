@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\azure-pipelines",
-    "\\helmfile",
-    "\\helmfile\\base",
-    "\\helmfile\\values",
-    "\\helmfile\\values\\account"
+    ""
   ],
-  "SelectedNode": "\\helmfile\\values\\account\\Prod.yaml.gotmpl",
+  "SelectedNode": "\\C:\\Users\\Mohammed\\Source\\Repos\\Cypios\\Account",
   "PreviewInSolutionExplorer": false
 }
