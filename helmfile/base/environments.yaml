@@ -3,7 +3,7 @@ environments:
 
   Develop:
     values:
-    - kubeContext: aks-cypios-dev678d889f
+    - kubeContext: aks-cypios-test
       ingressLoadBalancerIP: 20.90.121.103
       defaultIssuerName: letsencrypt-prod
       namespace: cypios-services-develop
@@ -12,7 +12,7 @@ environments:
 
   Prod:
     values:
-    - kubeContext: aks-cypios-dev678d889f
+    - kubeContext: aks-cypios-prod
       ingressLoadBalancerIP: 20.90.121.103
       defaultIssuerName: letsencrypt-prod
       namespace: cypios-services-prod
@@ -21,7 +21,7 @@ environments:
 
   Staging:
     values:
-    - kubeContext: aks-cypios-dev678d889f
+    - kubeContext: aks-cypios-staging
       ingressLoadBalancerIP: 20.90.121.103
       defaultIssuerName: letsencrypt-prod
       namespace: cypios-services-staging
@@ -30,7 +30,7 @@ environments:
 
   Test:
     values:
-    - kubeContext: aks-cypios-dev678d889f
+    - kubeContext: aks-cypios-test
       ingressLoadBalancerIP: 20.90.121.103
       defaultIssuerName: letsencrypt-prod
       namespace: cypios-services-test
