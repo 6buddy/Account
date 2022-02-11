@@ -69,6 +69,42 @@ stages:
             parameters:
               repository: $(repositoryUrl)
 
+          - ${{ if or(eq(parameters.Develop, true), and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+            - task: DownloadSecureFile@1
+              displayName: download env file for dev environnment
+              inputs:
+                secureFile: 'constants-account-dev.ts'
+                socketTimeout: '63000'
+                retryCount: 8
+      
+          - ${{ if  or(eq(parameters.Prod, true), and(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'IndividualCI')) )    }}:      
+            - task: DownloadSecureFile@1
+              displayName: download env file for prod environnment 
+              inputs:
+                secureFile: 'constants-account-prod.ts'
+                socketTimeout: '63000'
+                retryCount: 6
+
+          - ${{ if  or(eq(parameters.Staging, true), and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), eq(variables['Build.Reason'], 'IndividualCI')) )  }}:
+            - task: DownloadSecureFile@1
+              displayName: download env file for staging environnment              
+              inputs:
+                secureFile: 'constants-account-staging.ts'
+                socketTimeout: '63000'
+                retryCount: 8
+
+          - ${{ if  eq(parameters.Test, true)  }}:
+            - task: DownloadSecureFile@1
+              displayName: download env file for test environnment
+              inputs:
+                secureFile: 'constants-account-test.ts'
+                socketTimeout: '63000'
+                retryCount: 8
+
+          - script: |
+              echo copy env file to source folder
+              cp --verbose --force $(Agent.TempDirectory)/constants-account-* $(Build.SourcesDirectory)/src/constants.ts
+
           - task: SonarQubePrepare@5
             inputs:
               SonarQube: 'Sonarqube'
