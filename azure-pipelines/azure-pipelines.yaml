@@ -103,7 +103,7 @@ stages:
 
           - script: |
               echo copy env file to source folder
-              cp --verbose --force $(Agent.TempDirectory)/constants-account-* $(Build.SourcesDirectory)/src/constant.ts
+              cp --verbose --force $(Agent.TempDirectory)/constants-account-* $(Build.SourcesDirectory)/src/constant.js
 
           - task: SonarQubePrepare@5
             inputs:
