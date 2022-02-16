@@ -52,7 +52,7 @@ stages:
           DOCKER_BUILDKIT: 1
           SemVer: $[format('{0}-{1}',dependencies.Init.outputs['UpdateSemver.SemVer'] , variables['Build.BuildId'])]
           FullSemVer: $[format('{0}-{1}', dependencies.Init.outputs['UpdateSemver.FullSemVer'] , variables['Build.BuildId'])]
-          FullBuildMetaData: $[ dependencies.Init.outputs['UpdateSemver.FullBuildMetaData'] ]
+          FullBuildMetaData: $[format('{0}-{1}',dependencies.Init.outputs['UpdateSemver.FullBuildMetaData'], variables['Build.BuildId']) ]
           InformationalVersion: $[format('{0}-{1}',  dependencies.Init.outputs['UpdateSemver.InformationalVersion'] , variables['Build.BuildId'])]
           buildContext: "."
         strategy:
