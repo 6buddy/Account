@@ -50,10 +50,10 @@ stages:
         dependsOn: Init
         variables:
           DOCKER_BUILDKIT: 1
-          SemVer: $[ dependencies.Init.outputs['UpdateSemver.SemVer'] ]
-          FullSemVer: $[ dependencies.Init.outputs['UpdateSemver.FullSemVer'] ]
-          FullBuildMetaData: $[ dependencies.Init.outputs['UpdateSemver.FullBuildMetaData'] ]
-          InformationalVersion: $[ dependencies.Init.outputs['UpdateSemver.InformationalVersion'] ]
+          SemVer: $[format('{0}-{1}',dependencies.Init.outputs['UpdateSemver.SemVer'] , variables['Build.BuildId'])]
+          FullSemVer: $[format('{0}-{1}', dependencies.Init.outputs['UpdateSemver.FullSemVer'] , variables['Build.BuildId'])]
+          FullBuildMetaData: $[format('{0}-{1}',dependencies.Init.outputs['UpdateSemver.FullBuildMetaData'], variables['Build.BuildId']) ]
+          InformationalVersion: $[format('{0}-{1}',  dependencies.Init.outputs['UpdateSemver.InformationalVersion'] , variables['Build.BuildId'])]
           buildContext: "."
         strategy:
           matrix:
