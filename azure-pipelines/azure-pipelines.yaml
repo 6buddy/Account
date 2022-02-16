@@ -53,7 +53,7 @@ stages:
           SemVer: $[ dependencies.Init.outputs['UpdateSemver.SemVer'] ]_$(Date:yyyyMMddhhmm)
           FullSemVer: $[ dependencies.Init.outputs['UpdateSemver.FullSemVer'] ]_$(Date:yyyyMMddhhmm)
           FullBuildMetaData: $[ dependencies.Init.outputs['UpdateSemver.FullBuildMetaData'] ]
-          InformationalVersion: $[ dependencies.Init.outputs['UpdateSemver.InformationalVersion'] ]
+          InformationalVersion: $[ dependencies.Init.outputs['UpdateSemver.InformationalVersion'] ]_$(rev:.rr)
           buildContext: "."
         strategy:
           matrix:
