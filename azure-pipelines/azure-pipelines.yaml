@@ -101,6 +101,7 @@ stages:
                 socketTimeout: '63000'
                 retryCount: 8
 
+
           - script: |
               echo copy env file to source folder
               cp --verbose --force $(Agent.TempDirectory)/constants-account-* $(Build.SourcesDirectory)/src/constant.js
