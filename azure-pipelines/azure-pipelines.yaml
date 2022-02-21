@@ -32,18 +32,12 @@ parameters:
 pool:
   vmImage: "ubuntu-latest"
 
-variables:
-  - group: gitea-credentials
-
 stages:
   - stage: Build
     jobs:
       - job: Init
         displayName: Init
-        steps:
-          - template: templates/custom-clone.yaml
-            parameters:
-              repository: "git.cypios.net/cypios/accountFront.git"
+        steps:  
           - template: templates/ms-semver-update.yaml
       - job: DockerBuild
         displayName: Docker Build
@@ -61,13 +55,8 @@ stages:
               componentName: cypios
               microserviceName: cypios-account
               dockerfilePath: ./Dockerfile
-              imageRepository: cypios/cypios-account
-              repositoryUrl: "git.cypios.net/cypios/accountFront.git"
+              imageRepository: cypios/cypios-account              
         steps:
-
-          - template: templates/custom-clone.yaml
-            parameters:
-              repository: $(repositoryUrl)
 
           - ${{ if or(eq(parameters.Develop, true), and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
             - task: DownloadSecureFile@1
