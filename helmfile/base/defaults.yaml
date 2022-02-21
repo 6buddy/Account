@@ -1,0 +1,6 @@
+helmDefaults:
+  kubeContext: {{ .Values.kubeContext | quote }}
+  wait: false
+  timeout: 600
+  atomic: true
+  createNamespace: true

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "app-svc.fullname" . }}
+  labels:
+    {{- include "app-svc.labels" . | nindent 4 }}
+data:
+  {{- $root := . }}
+  {{ range $fileConfig := .Values.config.files }}
+  {{ $fileConfig.name }}: |-
+    {{- $root.Files.Get $fileConfig.path | nindent 4 }}
+  {{- end -}}
+  {{ range $inlineConfig := .Values.config.inline }}
+  {{ $inlineConfig.name }}: |-
+    {{- toPrettyJson $inlineConfig.value | nindent 4 -}}
+  {{ end }}

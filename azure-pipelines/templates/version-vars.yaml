@@ -1,0 +1,11 @@
+variables:
+    - name: ShortSha
+      value: $[format('{0}-{1}', stageDependencies.Build.Init.outputs['UpdateSemver.ShortSha'], variables['Build.BuildId']) ]
+    - name: SemVer
+      value: $[format('{0}-{1}', stageDependencies.Build.Init.outputs['UpdateSemver.SemVer'], variables['Build.BuildId']) ]
+    - name: FullSemVer
+      value: $[format('{0}-{1}', stageDependencies.Build.Init.outputs['UpdateSemver.FullSemVer'], variables['Build.BuildId']) ]
+    - name: FullBuildMetaData
+      value: $[format('{0}-{1}', stageDependencies.Build.Init.outputs['UpdateSemver.FullBuildMetaData'], variables['Build.BuildId']) ]
+    - name: InformationalVersion
+      value: $[format('{0}-{1}', stageDependencies.Build.Init.outputs['UpdateSemver.InformationalVersion'], variables['Build.BuildId']) ]

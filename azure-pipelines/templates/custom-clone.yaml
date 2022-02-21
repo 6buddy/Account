@@ -1,0 +1,12 @@
+parameters:
+  - name: repository
+    default: ''
+  - name: branch
+    default: 'master'
+
+steps:
+  - checkout: none
+  - script: |
+            echo 'Cloning into sources folder at: $(Build.SourcesDirectory)'
+            git clone https://$(external-git-user):$(external-git-password)@${{ parameters.repository }} --progress --branch ${{ parameters.branch }} $(Build.SourcesDirectory)
+    displayName: 'Custom git clone'

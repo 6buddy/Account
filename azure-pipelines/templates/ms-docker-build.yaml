@@ -1,0 +1,38 @@
+parameters:
+  componentName: ''
+  microserviceName: ''
+  dockerfilePath: ''
+  imageRepository: ''
+  buildContext: ''
+steps:
+- task: Docker@2
+  displayName: Login to ACR
+  inputs:
+    command: login
+    containerRegistry: acr-cypios
+
+- task: Docker@2
+  displayName: "Build Docker Image: ${{ parameters.imageRepository }}"
+  inputs:
+    command: build
+    repository: ${{ parameters.imageRepository }}
+    containerRegistry: acr-cypios
+    Dockerfile: ${{ parameters.dockerfilePath }}
+    tags: |
+      $(FullBuildMetaData)
+    buildContext: ${{ coalesce(parameters.buildContext, '') }}
+    arguments: >
+      --progress=plain
+      --label com.azure.dev.component=${{ parameters.componentName }}
+      --label com.azure.dev.subcomponent=${{ parameters.microserviceName }}
+      --label com.azure.dev.buildmetadata=$(FullBuildMetaData)
+      --label com.azure.dev.informationalversion=$(InformationalVersion)
+
+- task: Docker@2
+  displayName: "Push Docker Image: ${{ parameters.imageRepository }}"
+  inputs:
+    command: push
+    containerRegistry: acr-cypios
+    repository: ${{ parameters.imageRepository }}
+    tags: |
+      $(FullBuildMetaData)
