@@ -1,0 +1,56 @@
+steps:
+- task: UseNode@1
+  inputs:
+    version: "16.14.0"
+
+- task: DownloadSecureFile@1
+  displayName: download env routes.json file 
+  inputs:
+    secureFile: 'routes.json'
+    socketTimeout: '63000'
+    retryCount: 6
+
+- script: |
+        echo copy routes file to public folder
+        cp --verbose --force $(Agent.TempDirectory)/routes.json $(Build.SourcesDirectory)/public
+
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: 'Sonarqube'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'cypios_Account'
+    cliProjectName: 'Account'              
+    cliSources: '.'
+
+- task: Bash@3
+  inputs:
+    targetType: "inline"
+    script: |
+      npm install 
+      npx browserslist@latest --update-db     
+      npm run build
+    workingDirectory: "."
+  env:
+    REACT_APP_CONFIRM_LOGIN_URL: $(REACT_APP_CONFIRM_LOGIN_URL)
+    REACT_APP_LOGIN_URL: $(REACT_APP_LOGIN_URL)
+    REACT_APP_PROD_URL: $(REACT_APP_PROD_URL)
+    REACT_APP_ROLE_URL: $(REACT_APP_ROLE_URL)
+    REACT_APP_SURVEY_URL: $(REACT_APP_SURVEY_URL)
+
+- script: |
+    FILTERED_PARAMS=$(echo $SONARQUBE_SCANNER_PARAMS | sed 's/"sonar.branch.name":"[^"]*"\,//g')
+    echo "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$FILTERED_PARAMS"
+  displayName: Filter out non-CE sonar parameters    
+- task: SonarQubeAnalyze@5
+  
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '900'
+
+- task: AzureStaticWebApp@0
+  inputs:
+    app_location: "/build"
+    output_location: "build"
+    azure_static_web_apps_api_token: $(deployment_token)
+    skip_app_build: true
