@@ -1,6 +1,6 @@
-export const confirmPro = "https://sso.dev.cypios.net/sso/pro/confirm"
-export const confirmPatient = "https://sso.dev.cypios.net/sso/patient/confirm"
-export const createPro = "https://sso.dev.cypios.net/sso/pro/invite"
-export const resetPassword = "https://sso.dev.cypios.net/sso/global/reset"
-export const enterPassword = "https://sso.dev.cypios.net/sso/global/change"
-export const resetEmail = "https://sso.dev.cypios.net/sso/global/email/change"
+export const confirmPro = process.env.REACT_APP_CONFIRM_PRO
+export const confirmPatient = process.env.REACT_APP_CONFIRM_PATIENT
+export const createPro = process.env.REACT_APP_CREATE_PRO
+export const resetPassword = process.env.REACT_APP_RESET_PWD
+export const enterPassword = process.env.REACT_APP_ENTER_PWD
+export const resetEmail = process.env.REACT_APP_RESET_MAIL

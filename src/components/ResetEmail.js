@@ -27,7 +27,6 @@ export default function ResetEmail({ className, ...rest }) {
     const location = useLocation();
     const paramId = location.hash.split("=")[1];
     const { enqueueSnackbar } = useSnackbar();
-
     if (!paramId) return null;
 
     return (
