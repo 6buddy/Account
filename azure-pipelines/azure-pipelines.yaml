@@ -58,7 +58,22 @@ stages:
                   - template: "templates/staticwebapp-build.yaml"
 
     - ${{ if or(eq(parameters.Prod, true), and(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+        - job: manualValidation        
+          displayName: 'Waiting for manual validation'
+          pool: server
+          timeoutInMinutes: 4320 # job times out in 3 days
+          steps:
+          - task: ManualValidation@0
+            inputs:
+              # notifyUsers should be a distribution group or sahred mailbox
+              notifyUsers: |
+                p.joyeau@cypios.fr
+                q.thomas@cypios.fr
+                t.florentin@cypios.fr                
+              instructions: 'Please validate the deployement on production envrironnement'
+
         - deployment: deployProd
+          dependsOn: manualValidation
           environment: Prod.cypios-services-prod
           variables:
             - group: Prod
