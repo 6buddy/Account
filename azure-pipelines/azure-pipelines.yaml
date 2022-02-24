@@ -59,7 +59,7 @@ stages:
 
     - ${{ if or(eq(parameters.Prod, true), and(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
         - job: manualValidation        
-          displayName: 'Wait for external validation'
+          displayName: 'Waiting for manual validation'
           pool: server
           timeoutInMinutes: 4320 # job times out in 3 days
           steps:
