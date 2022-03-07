@@ -10,25 +10,16 @@ trigger:
       
 
 parameters:
-  - name: Develop
-    displayName: Deploy Develop Environment
-    default: false
-    type: boolean
-
-  - name: Prod
-    displayName: Deploy Prod Environment
-    default: false
-    type: boolean
-
-  - name: Staging
-    displayName: Deploy Staging Environment
-    default: false
-    type: boolean
-
-  - name: Test
-    displayName: Deploy Test Environment
-    default: false
-    type: boolean
+  - name: CypiosEnv
+    displayName: Targent environment
+    type: string    
+    default: None
+    values:
+      - None
+      - Develop
+      - Prod
+      - Staging
+      - Test
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -44,7 +35,7 @@ stages:
         - bash: |
             echo "init"
 
-    - ${{ if or(eq(parameters.Develop, true), and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+    - ${{ if or(eq(parameters.CypiosEnv, 'Develop'), and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
         - deployment: deployDev
           environment: Develop.cypios-services-develop
           variables:
@@ -57,7 +48,7 @@ stages:
                   - checkout: self 
                   - template: "templates/staticwebapp-build.yaml"
 
-    - ${{ if or(eq(parameters.Prod, true), and(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+    - ${{ if or(eq(parameters.CypiosEnv, 'Prod'), and(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
         - job: manualValidation        
           displayName: 'Waiting for manual validation'
           pool: server
@@ -85,7 +76,7 @@ stages:
                   - checkout: self 
                   - template: "templates/staticwebapp-build.yaml"
 
-    - ${{ if or(eq(parameters.Staging, true), and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
+    - ${{ if or(eq(parameters.CypiosEnv, 'Staging'), and(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), eq(variables['Build.Reason'], 'IndividualCI')) ) }}:
         - deployment: deployStaging
           environment: Staging.cypios-services-staging
           variables:
@@ -98,7 +89,7 @@ stages:
                   - checkout: self 
                   - template: "templates/staticwebapp-build.yaml"
 
-    - ${{ if eq(parameters.Test, true) }}:
+    - ${{ if eq(parameters.CypiosEnv, 'Test') }}:
         - deployment: deployTest
           environment: Test.cypios-services-test
           variables:
