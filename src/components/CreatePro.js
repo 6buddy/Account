@@ -12,7 +12,7 @@ import {
   FormHelperText,
   Grid,
   TextField,
-  makeStyles,
+  makeStyles, FormControl, InputLabel, Select, MenuItem,
 } from "@material-ui/core";
 import { useLocation } from "react-router";
 import { useSnackbar } from "notistack";
@@ -29,20 +29,16 @@ export default function CreatePro({ className, ...rest }) {
   return (
     <Formik
       initialValues={{
-        lastname: "",
-        firstname: "",
         mail: "",
         code: "",
-        rpps: ""
+        role: "pro"
       }}
       validationSchema={Yup.object().shape({
-        lastname: Yup.string().required("obligatoire"),
-        firstname: Yup.string().required("obligatoire"),
-        rpps: Yup.string().required("obligatoire"),
         mail: Yup.string()
           .email("doit etre un mail valide")
           .required("obligatoire"),
         code: Yup.string().required("obligatoire"),
+        role: Yup.string().required()
       })}
       onSubmit={async (
         values,
@@ -50,13 +46,10 @@ export default function CreatePro({ className, ...rest }) {
       ) => {
         try {
           // Make API request
-          const data = await fetch(createPro, {
+          const data = await fetch(values.role === "pro" ? createPro : createPro.replace("pro", "admin"), {
             method: "POST",
             body: JSON.stringify({
               email: values.mail,
-              firstname: values.firstname,
-              lastname: values.lastname,
-              rpps: values.rpps
             }),
             headers: {
               "content-type": "application/json",
@@ -66,9 +59,8 @@ export default function CreatePro({ className, ...rest }) {
           if (data.status !== 201 && data.status !== 200 && data.status !== 202)
             throw "Erreur: code invalide";
 
-            //@TODO redirct to pro website
           enqueueSnackbar(
-            "Vous pouvez maitenant vous connecter sur votre application web",
+            "Le professionel à été invité",
             {
               variant: "success",
             }
@@ -103,48 +95,6 @@ export default function CreatePro({ className, ...rest }) {
               <Grid container spacing={3}>
                 <Grid item md={4} sm={6} xs={12}>
                   <TextField
-                    error={Boolean(touched.firstname && errors.firstname)}
-                    fullWidth
-                    helperText={touched.firstname && errors.firstname}
-                    label="Prenom"
-                    name="firstname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    type="text"
-                    value={values.firstname}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={4} sm={6} xs={12}>
-                  <TextField
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    fullWidth
-                    helperText={touched.lastname && errors.lastname}
-                    label="Nom"
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    type="text"
-                    value={values.lastname}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={4} sm={6} xs={12}>
-                  <TextField
-                    error={Boolean(touched.rpps && errors.rpps)}
-                    fullWidth
-                    helperText={touched.rpps && errors.rpps}
-                    label="RPPS"
-                    name="rpps"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    type="text"
-                    value={values.rpps}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={4} sm={6} xs={12}>
-                  <TextField
                     error={Boolean(touched.mail && errors.mail)}
                     fullWidth
                     helperText={touched.mail && errors.mail}
@@ -170,6 +120,22 @@ export default function CreatePro({ className, ...rest }) {
                     value={values.code}
                     variant="outlined"
                   />
+                </Grid>
+                <Grid xs={4} md={4} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={values.role}
+                        label="Role"
+                        name="role"
+                        onChange={handleChange}
+                    >
+                      <MenuItem value={"pro"}>Professionel</MenuItem>
+                      <MenuItem value={"admin"}>Administrateur</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
 

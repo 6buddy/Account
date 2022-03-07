@@ -74,8 +74,8 @@ export default function ConfirmAccount({ className, ...rest }) {
                 phone: "",
                 phoneConfirm: "",
                 mail: "",
-                role: -1,
-                methodAuth: -1,
+                role: 0,
+                methodAuth: 0,
             }}
             validationSchema={Yup.object().shape({
                 password: Yup.string()
@@ -288,52 +288,29 @@ export default function ConfirmAccount({ className, ...rest }) {
                                         </Grid>
                                     </Grid>
                                     <Grid container xs={12} className={classes.inputGroup}>
-                                        <Grid item xs={6} className={classes.select}>
-                                            <FormControl variant="outlined" >
-                                                <InputLabel>Méthode de double authentification</InputLabel>
-                                                <Select
-                                                    error={Boolean(
-                                                        touched.methodAuth && errors.methodAuth
-                                                    )}
-                                                    helperText={
-                                                        touched.methodAuth && errors.methodAuth
-                                                    }
-                                                    name="methodAuth"
-                                                    value={values.methodAuth}
-                                                    onChange={handleChange}
-                                                    label="Méthode de double authentificiation"
-                                                >
-                                                    <MenuItem value="-1">
-                                                        <em>Selectionner une méthode</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={0}>Code par Email</MenuItem>
-                                                    <MenuItem value={1}>Code par Portable</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={6} className={classes.select}>
-                                            <FormControl variant="outlined">
-                                                <InputLabel>Role</InputLabel>
-                                                <Select
-                                                    error={Boolean(
-                                                        touched.role && errors.role
-                                                    )}
-                                                    helperText={
-                                                        touched.role && errors.role
-                                                    }
-                                                    name="role"
-                                                    value={values.role}
-                                                    onChange={handleChange}
-                                                    label="Role"
-                                                >
-                                                    <MenuItem value="-1">
-                                                        <em>Selectionner un role</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={0}>Patient</MenuItem>
-                                                    <MenuItem value={1}>Professionel</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
+                                        {/*<Grid item xs={6} className={classes.select}>*/}
+                                        {/*    <FormControl variant="outlined" >*/}
+                                        {/*        <InputLabel>Méthode de double authentification</InputLabel>*/}
+                                        {/*        <Select*/}
+                                        {/*            error={Boolean(*/}
+                                        {/*                touched.methodAuth && errors.methodAuth*/}
+                                        {/*            )}*/}
+                                        {/*            helperText={*/}
+                                        {/*                touched.methodAuth && errors.methodAuth*/}
+                                        {/*            }*/}
+                                        {/*            name="methodAuth"*/}
+                                        {/*            value={values.methodAuth}*/}
+                                        {/*            onChange={handleChange}*/}
+                                        {/*            label="Méthode de double authentificiation"*/}
+                                        {/*        >*/}
+                                        {/*            <MenuItem value="-1">*/}
+                                        {/*                <em>Selectionner une méthode</em>*/}
+                                        {/*            </MenuItem>*/}
+                                        {/*            <MenuItem value={0}>Code par Email</MenuItem>*/}
+                                        {/*            <MenuItem value={1}>Code par Portable</MenuItem>*/}
+                                        {/*        </Select>*/}
+                                        {/*    </FormControl>*/}
+                                        {/*</Grid>*/}
                                     </Grid>
                                     {errors.submit && (
                                         <Box mt={3}>
