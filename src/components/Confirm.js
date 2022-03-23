@@ -136,9 +136,9 @@ export default function ConfirmAccount({ className, ...rest }) {
                     if (data.status !== 201 && data.status !== 200 && data.status !== 202)
                         throw Error("Nom d'utilisateur invalide");
 
-                    //@TODO redirct to pro website
+                    //@TODO redirect to patient app
                     enqueueSnackbar(
-                        "Vous pouvez maitenant vous connecter sur votre interface web",
+                        "Vous pouvez maitenant télécharger l'applicaton et commencer à l'utiliser",
                         {
                             variant: "success",
                         }
