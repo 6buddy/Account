@@ -16,7 +16,7 @@ steps:
 
 - task: SonarQubePrepare@5
   inputs:
-    SonarQube: 'Sonarqube'
+    SonarQube: 'SonarQubeDev'
     scannerMode: 'CLI'
     configMode: 'manual'
     cliProjectKey: 'cypios_Account'
@@ -38,10 +38,10 @@ steps:
     REACT_APP_ROLE_URL: $(REACT_APP_ROLE_URL)
     REACT_APP_SURVEY_URL: $(REACT_APP_SURVEY_URL)
 
-- script: |
-    FILTERED_PARAMS=$(echo $SONARQUBE_SCANNER_PARAMS | sed 's/"sonar.branch.name":"[^"]*"\,//g')
-    echo "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$FILTERED_PARAMS"
-  displayName: Filter out non-CE sonar parameters    
+# - script: |
+#     FILTERED_PARAMS=$(echo $SONARQUBE_SCANNER_PARAMS | sed 's/"sonar.branch.name":"[^"]*"\,//g')
+#     echo "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$FILTERED_PARAMS"
+#   displayName: Filter out non-CE sonar parameters    
 - task: SonarQubeAnalyze@5
   
 - task: SonarQubePublish@5
