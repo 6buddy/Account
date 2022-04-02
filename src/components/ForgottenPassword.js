@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import clsx from "clsx";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -16,18 +16,31 @@ import {
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import {resetPassword} from "../constant"
+import {RSADecrypt, SignDate} from "../encrypt.lib.compiled";
 const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-export default function ForgottenPassword({ className, ...rest }) {
+export default function ForgottenPassword({ className, ...props }) {
+  const [recovery, setRecovery] = useState();
+
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+
+  const key =decodeURI(props?.location?.search?.slice(1));
+
+  if (!key)
+    return <div>URL invalide (clef manquante)</div>
+  if (key.length < 2048)
+    return <div>URL invalide (clef trop petite)</div>
+
+  if (recovery)
+    return <div>{recovery}</div>
 
   return (
     <Formik
       initialValues={{
-        email: "",
+        email: "cypios2@yopmail.com",
       }}
       validationSchema={Yup.object().shape({
         email: Yup.string()
@@ -46,6 +59,7 @@ export default function ForgottenPassword({ className, ...rest }) {
               method: "POST",
               body: JSON.stringify({
                 email: values.email,
+                encryptedDate : await SignDate(key)
               }),
               headers: {
                 "content-type": "application/json",
@@ -55,6 +69,8 @@ export default function ForgottenPassword({ className, ...rest }) {
           if (data.status !== 201 && data.status !== 200 && data.status !== 202)
             throw "Erreur";
 
+          const json = await data.json();
+          setRecovery(await RSADecrypt(json.recovery, key));
           resetForm();
           setStatus({ success: true });
           setSubmitting(false);
@@ -62,10 +78,11 @@ export default function ForgottenPassword({ className, ...rest }) {
             variant: "success",
           });
         } catch (error) {
+          console.log(error);
           setStatus({ success: false });
           setErrors({ submit: error.message });
           setSubmitting(false);
-          enqueueSnackbar(error, {
+          enqueueSnackbar('Erreur', {
             variant: "error",
           });
         }
@@ -81,7 +98,7 @@ export default function ForgottenPassword({ className, ...rest }) {
         values,
       }) => (
         <form onSubmit={handleSubmit}>
-          <Card className={clsx(classes.root, className)} {...rest}>
+          <Card className={clsx(classes.root, className)} {...props}>
             <CardHeader title="Mot de passe oublié" />
             <Divider />
             <CardContent>
