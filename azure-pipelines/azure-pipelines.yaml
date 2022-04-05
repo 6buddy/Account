@@ -102,7 +102,7 @@ stages:
                   - checkout: self
                   - template: "templates/staticwebapp-build.yaml"
 
-    - ${{ if eq(parameters.CypiosEnv, 'None') }}:
+    - ${{ if and(eq(parameters.CypiosEnv, 'None'), ne(variables['Build.Reason'], 'IndividualCI') ) }}:
       - deployment: buildWithoutDeployment
         environment: Develop.cypios-services-develop
         variables:
