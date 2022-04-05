@@ -101,3 +101,17 @@ stages:
                 steps:
                   - checkout: self
                   - template: "templates/staticwebapp-build.yaml"
+
+    - ${{ if eq(parameters.CypiosEnv, 'None') }}:
+      - deployment: buildWithoutDeployment
+        environment: Develop.cypios-services-develop
+        variables:
+          - group: Develop          
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: "templates/staticwebapp-build.yaml"
+                  parameters:
+                    Deploy: false                   

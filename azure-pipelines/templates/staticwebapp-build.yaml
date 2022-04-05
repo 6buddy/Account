@@ -1,3 +1,8 @@
+parameters:
+  - name: Deploy    
+    type: boolean
+    default: true
+
 steps:
 - task: UseNode@1
   inputs:
@@ -48,9 +53,10 @@ steps:
   inputs:
     pollingTimeoutSec: '900'
 
-- task: AzureStaticWebApp@0
-  inputs:
-    app_location: "/build"
-    output_location: "build"
-    azure_static_web_apps_api_token: $(deployment_token)
-    skip_app_build: true
+- ${{ if eq(parameters.Deploy, true) }}:
+  - task: AzureStaticWebApp@0
+    inputs:
+      app_location: "/build"
+      output_location: "build"
+      azure_static_web_apps_api_token: $(deployment_token)
+      skip_app_build: true
